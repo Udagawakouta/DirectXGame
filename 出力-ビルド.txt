@@ -1,0 +1,11 @@
+ビルドを開始しました...
+1>------ ビルド開始: プロジェクト: DirectXGame, 構成: Release x64 ------
+1>main.cpp
+1>GameScene.cpp
+1>GameScene.obj : error LNK2001: 外部シンボル "public: void __cdecl Player::Draw(struct ViewProjection &)" (?Draw@Player@@QEAAXAEAUViewProjection@@@Z) は未解決です
+1>GameScene.obj : error LNK2001: 外部シンボル "public: void __cdecl Player::Update(void)" (?Update@Player@@QEAAXXZ) は未解決です
+1>GameScene.obj : error LNK2001: 外部シンボル "public: void __cdecl Player::Initialize(class Model *,unsigned int)" (?Initialize@Player@@QEAAXPEAVModel@@I@Z) は未解決です
+1>C:\KamataEngine\DirectXGame\..\Generated\Outputs\Release\DirectXGame.exe : fatal error LNK1120: 3 件の未解決の外部参照
+1>プロジェクト "DirectXGame.vcxproj" のビルドが終了しました -- 失敗。
+========== ビルド: 成功 0、失敗 1、最新の状態 0、スキップ 0 ==========
+========== ビルド は 12:36 PM に開始され、03.049 秒 かかりました ==========
