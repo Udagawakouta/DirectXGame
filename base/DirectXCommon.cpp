@@ -1,4 +1,4 @@
-#include "DirectXCommon.h"
+﻿#include "DirectXCommon.h"
 #include "SafeDelete.h"
 #include <algorithm>
 #include <cassert>

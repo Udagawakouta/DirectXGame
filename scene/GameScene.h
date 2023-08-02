@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Audio.h"
 #include "DirectXCommon.h"
@@ -10,6 +10,9 @@
 #include "WorldTransform.h"
 #include "DebugCamera.h"
 #include "Player.h"
+#include "Enemy.h"
+#include "Skydome.h"
+#include "RailCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -21,7 +24,10 @@ public: // メンバ関数
 	/// コンストクラタ
 	/// </summary>
 	GameScene();
+	void CheckAllCollisions();
 	
+
+
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
@@ -52,12 +58,32 @@ private: // メンバ変数
 	/// </summary>
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
-
+	uint32_t enemytextureHandle_ = 0;
+	//uint32_t skydometextureHandle_ = 0;
 	// 自キャラ
 	Player* player_ = nullptr;
 
-	// 3Dモデル
+	//敵キャラ
+	Enemy* enemy_ = nullptr;
+
+	//天球
+	Skydome* skydome_ = nullptr;
+
+	//レールカメラ
+	RailCamera* railcamera_ = nullptr;
+
+	// デバックカメラ有効
+	bool isDebugCameraActive_ = false;
+
+	// デバックカメラ
+	DebugCamera* debugCamera_ = nullptr;
+	
+	//3Dモデル
 	Model* model_ = nullptr;
+
+	//3Dモデルスカイドーム
+	Model* modelSkydome_ = nullptr;
+
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	// ビュープロジェクション
