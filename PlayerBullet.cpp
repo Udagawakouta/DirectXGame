@@ -1,5 +1,6 @@
 ﻿#include "PlayerBullet.h"
 #include "WorldTransform.h"
+#include "MyMath.h"
 #include <assert.h>
 
 void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
@@ -20,9 +21,14 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 
 void PlayerBullet::Update() {
 	//座標を移動させる
-	worldTransform_.translation_.x += 0;
-	worldTransform_.translation_.y += 0;
-	worldTransform_.translation_.z += 3;
+	//  Y軸周り角度(θy)
+	worldTransform_.rotation_.y = std::atan2(velocity_.x, velocity_.z);
+	// 横軸方向の長さを求める
+	float velocityXZ;
+	velocityXZ = sqrt(velocity_.x * velocity_.x + velocity_.z * velocity_.z);
+	// X軸周りの角度(θx)
+	worldTransform_.rotation_.x = std::atan2(-velocity_.y, velocityXZ);
+	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
 
 	worldTransform_.UpdateMatrix();
 

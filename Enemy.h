@@ -6,7 +6,7 @@
 #include <list>
 
 class Player;
-
+class GameScene;
 
 ///< summary>
 /// 敵
@@ -15,7 +15,7 @@ class Enemy {
 public:
 	~Enemy();
 
-	void Initialize(Model* model, uint32_t textureHandle);
+	void Initialize(Model* model, uint32_t textureHandle,Vector3 pos);
 
 	void Update();
 
@@ -26,6 +26,8 @@ public:
 	void Approach();
 
 	void SetPlayer(Player* player) { player_ = player; }
+
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
@@ -69,6 +71,8 @@ private:
 	int32_t deathTimer_ = kLifeTime;
 	// デスフラグ
 	bool isEnemyDead_ = false;
+	//ゲームシーン
+	GameScene* gameScene_ = nullptr;
 	// 発射タイマーを初期化
 	//int approach = 0;
 };

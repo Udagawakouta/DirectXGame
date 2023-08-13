@@ -20,8 +20,8 @@ private:
 	WorldTransform worldtransform_;
 	//ビュープロジェクション
 	ViewProjection viewProjection_;
-	// モデル
-	Model* model_ = nullptr;
-	// 速度
-	Vector3 CameraVelocity_;
+	//// モデル
+	//Model* model_ = nullptr;
+	//// 速度
+	//Vector3 CameraVelocity_;
 };

@@ -11,7 +11,7 @@ Enemy::~Enemy() {
 	}
 }
 
-void Enemy::Initialize(Model* model, uint32_t textureHandle) {
+void Enemy::Initialize(Model* model, uint32_t textureHandle,Vector3 pos) {
 	// NULLポインタチェック
 	assert(model);
 
@@ -22,7 +22,7 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 	worldTransform_.Initialize();
 
 	// X,Y,Z方向のスケーリングを設定
-	worldTransform_.translation_ = {10.0f, 2.0f, 120.0f};
+	worldTransform_.translation_ = pos;
 
 	// bullet_の解散
 	for (EnemyBullet* bullet : bullets_) {

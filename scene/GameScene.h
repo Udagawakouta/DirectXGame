@@ -13,6 +13,7 @@
 #include "Enemy.h"
 #include "Skydome.h"
 #include "RailCamera.h"
+#include <sstream>
 
 /// <summary>
 /// ゲームシーン
@@ -26,8 +27,6 @@ public: // メンバ関数
 	GameScene();
 	void CheckAllCollisions();
 	
-
-
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
@@ -37,6 +36,27 @@ public: // メンバ関数
 	/// 初期化
 	/// </summary>
 	void Initialize();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
+
+	/// <summary>
+	/// 敵発生データの読み込み
+	/// </summary>
+	void LoadEnemyPopData();
+
+	/// <summary>
+	/// 敵の発生処理
+	/// </summary>
+	/// <param name="pos"></param>
+	void SpawnEnemy(Vector3 pos);
+
+	/// <summary>
+	/// 敵発生コマンドの更新
+	/// </summary>
+	void UpdateEnemyPopCommands();
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -64,7 +84,13 @@ private: // メンバ変数
 	Player* player_ = nullptr;
 
 	//敵キャラ
-	Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemy_;
+
+	//敵弾
+	std::list<EnemyBullet*> enemybullets_;
+
+	//敵発生コマンド
+	std::stringstream enemyPopCommands;
 
 	//天球
 	Skydome* skydome_ = nullptr;
