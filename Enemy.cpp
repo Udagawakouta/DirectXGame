@@ -1,17 +1,14 @@
 ﻿#include "Enemy.h"
+#include "GameScene.h"
 #include "ImGuiManager.h"
 #include "MyMath.h"
 #include "Player.h"
 #include <cassert>
 
 Enemy::~Enemy() {
-	// bullet_の解散
-	for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}
 }
 
-void Enemy::Initialize(Model* model, uint32_t textureHandle,Vector3 pos) {
+void Enemy::Initialize(Model* model, uint32_t textureHandle, Vector3 pos) {
 	// NULLポインタチェック
 	assert(model);
 
@@ -24,13 +21,8 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle,Vector3 pos) {
 	// X,Y,Z方向のスケーリングを設定
 	worldTransform_.translation_ = pos;
 
-	// bullet_の解散
-	for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}
-
-	// 弾を発射
-	// Fire();
+	// 発射タイマーを初期化
+	shotTimer = kFireInterval;
 
 	// 接近フェーズ初期化
 	Approach();
@@ -70,30 +62,31 @@ void Enemy::Update() {
 		break;
 	}
 
-	// デスフラグの立った弾を削除
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsEnemyDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
+	//// デスフラグの立った弾を削除
+	//bullets_.remove_if([](EnemyBullet* bullet) {
+	//	if (bullet->IsEnemyDead()) {
+	//		delete bullet;
+	//		return true;
+	//	}
+	//	return false;
+	//});
 
-	// 弾更新
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Update();
-	}
+	//// 弾更新
+	//for (EnemyBullet* bullet : bullets_) {
+	//	bullet->Update();
+	//}
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) {
-	model_->Draw(worldTransform_, viewProjection, enemytextureHandle_);
-
-	// 弾描画
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
+	if (!isEnemyDead_) {
+		model_->Draw(worldTransform_, viewProjection, enemytextureHandle_);
 	}
-}
 
+	//// 弾描画
+	//for (EnemyBullet* bullet : bullets_) {
+	//	bullet->Draw(viewProjection);
+	//}
+}
 
 void Enemy::Fire() {
 	assert(player_);
@@ -122,13 +115,13 @@ void Enemy::Fire() {
 	};
 	// 弾を生成し、初期化
 	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+	newBullet->Initialize(model_, GetWorldPosition(), velocity);
 
-	// 弾を登録する
-	bullets_.push_back(newBullet);
+	// 弾を登録
+	gameScene_->AddEnemyBullet(newBullet);
 }
 
-void Enemy::Approach(){
+void Enemy::Approach() {
 
 	// 発射タイマーカウントダウン
 	shotTimer--;
@@ -152,6 +145,4 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
-void Enemy::OnCollision() {
-
-}
+void Enemy::OnCollision() { isEnemyDead_ = true; }

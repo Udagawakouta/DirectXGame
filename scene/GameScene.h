@@ -68,6 +68,9 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	// 弾リストを取得
+	const std::list<EnemyBullet*>& GetBullets() const { return enemyBullets_; }
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -87,10 +90,10 @@ private: // メンバ変数
 	std::list<Enemy*> enemy_;
 
 	//敵弾
-	std::list<EnemyBullet*> enemybullets_;
+	std::list<EnemyBullet*> enemyBullets_;
 
 	//敵発生コマンド
-	std::stringstream enemyPopCommands;
+	std::stringstream enemyPopCommands_;
 
 	//天球
 	Skydome* skydome_ = nullptr;
@@ -114,4 +117,9 @@ private: // メンバ変数
 	WorldTransform worldTransform_;
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
+
+		// 敵が発生待機中か
+	bool isWait_ = false;
+	// 敵が発生するまでの時間
+	int32_t waitTime_ = 0;
 };

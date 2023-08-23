@@ -35,9 +35,6 @@ public:
 	//敵ワールド座標を取得
 	Vector3 GetWorldPosition();
 
-	// 弾リストを取得
-	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
-
 	static const int32_t kLifeTime = 60 * 5;
 
 private:
@@ -62,7 +59,7 @@ private:
 	// キーボード入力
 	Input* input_ = nullptr;
 	// 弾
-	std::list<EnemyBullet*> bullets_;
+	//std::list<EnemyBullet*> bullets_;
 	//発射タイマー
 	int32_t shotTimer = 0;
 	//自キャラ
