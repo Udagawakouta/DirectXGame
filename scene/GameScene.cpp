@@ -110,7 +110,11 @@ void GameScene::Update() {
 	skydome_->Update();
 
 	// 当たり判定
-	CheckAllCollisions();
+	for (Enemy* enemy : enemy_) {
+		for (EnemyBullet* enemyBullet : enemyBullets_) {
+			CheckAllCollisions();
+		}
+	}
 	// aa
 
 	// キャラクターの移動ベクトル
