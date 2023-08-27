@@ -11,7 +11,7 @@
 #include <cassert>
 #include <fstream>
 
-GameScene::GameScene() {}
+GameScene::GameScene(){};
 
 GameScene::~GameScene() {
 	// delete sprite_;
