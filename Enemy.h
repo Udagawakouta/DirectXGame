@@ -35,6 +35,8 @@ public:
 	//敵ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+	bool IsDead() { return isEnemyDead_;	}
+
 	// 弾リストを取得
 	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
 

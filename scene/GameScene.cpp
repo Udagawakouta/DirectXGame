@@ -96,6 +96,13 @@ void GameScene::Update() {
 	UpdateEnemyPopCommands();
 
 	// 敵キャラの更新
+	enemy_.remove_if([](Enemy* enemy) {
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
 	for (Enemy* enemy : enemy_) {
 		enemy->Update();
 	}
@@ -236,7 +243,7 @@ void GameScene::CheckAllCollisions() {
 			float distance = dx + dy + dz;
 			if (distance <= (radius + radius) * (radius + radius)) {
 				enemy->OnCollision();
-				bullet->OnCollision();
+ 				bullet->OnCollision();
 			}
 		}
 	}
