@@ -3,6 +3,7 @@
 #include "WorldTransform.h"
 #include "Input.h"
 #include "PlayerBullet.h"
+#include "Sprite.h"
 #include <list>
 
 class Player {
@@ -48,4 +49,9 @@ private:
 	std::list<PlayerBullet*> bullets_;
 	// デスフラグ
 	bool isEnemyDead_ = false;
+
+	//3Dレティクル用ワールドトランスフォーム
+	WorldTransform worldTransform3DReticle_;
+	//2Dレティクル用のスプライト
+	Sprite* sprite2DReticle_ = nullptr;
 };
