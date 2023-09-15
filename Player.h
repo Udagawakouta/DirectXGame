@@ -16,13 +16,19 @@ public:
 
 	void Initialize(Model* model, uint32_t textureHandle, Vector3 playerPosition);
 
-	void Update();
+	void Update(const ViewProjection& viewProjection);
 
 	void Draw(ViewProjection& viewProjection);
 
 	void Attack();
 
 	void SetParent(const WorldTransform* parent);
+
+	/// <summary>
+	/// UI描画
+	/// <summary>
+	void DrawUI();
+
 
 	//衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
@@ -49,6 +55,8 @@ private:
 	std::list<PlayerBullet*> bullets_;
 	// デスフラグ
 	bool isEnemyDead_ = false;
+
+
 
 	//3Dレティクル用ワールドトランスフォーム
 	WorldTransform worldTransform3DReticle_;

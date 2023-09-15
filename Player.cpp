@@ -8,6 +8,8 @@ Player::~Player() {
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
 	}
+
+	delete sprite2DReticle_;
 }
 
 void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 playerPosition) {
@@ -35,13 +37,13 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 playerPosi
 	worldTransform3DReticle_.Initialize();
 
 	// レティクル用のテクスチャ取得
-	uint32_t textureReticle = TextureManager::Load("reticle.png");
+	uint32_t textureReticle = TextureManager::Load("./Resources/reticle.png");
 
-	//スプライト生成
+	// スプライト生成
 	sprite2DReticle_ = Sprite::Create(textureReticle, {640, 320}, {1, 1, 1, 1}, {0.5f, 0.5f});
 }
 
-void Player::Update() {
+void Player::Update(const ViewProjection& viewProjection) {
 
 	// キャラクターの移動ベクトル
 	Vector3 move = {0, 0, 0};
@@ -195,6 +197,22 @@ void Player::Update() {
 		worldTransform3DReticle_.translation_.z = GetWorldPosition().z + offset.z;
 
 		worldTransform3DReticle_.UpdateMatrix();
+
+		Vector3 positionReticle = GetWorldPosition();
+
+		// ビューポート行列
+		Matrix4x4 matViewport = MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+
+		//ビュー行列とプロジェクション行列、ビューポート行列を合成する
+		Matrix4x4 matViewProjectionViewport =
+		    Multiply(Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
+
+		//ワールドスクリーン座標変換
+		positionReticle = Transform(positionReticle, matViewProjectionViewport);
+
+		//スプライトのレティクルに座標設定
+		sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+
 	}
 
 	ImGui::End();
@@ -266,3 +284,5 @@ void Player::SetParent(const WorldTransform* parent) {
 	// 親子関係を結ぶ
 	worldTransform_.parent_ = parent;
 }
+
+void Player::DrawUI() { sprite2DReticle_->Draw(); }

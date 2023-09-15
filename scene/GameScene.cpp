@@ -1,11 +1,8 @@
 ﻿#include "GameScene.h"
 #include "AxisIndicator.h"
-#include "Enemy.h"
 #include "ImGuiManager.h"
-#include "Player.h"
 #include "PlayerBullet.h"
 #include "PrimitiveDrawer.h"
-#include "RailCamera.h"
 #include "Skydome.h"
 #include "TextureManager.h"
 #include <cassert>
@@ -81,6 +78,9 @@ void GameScene::Initialize() {
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+
+	//レティクルのテクスチャ
+	TextureManager::Load("./Resources/reticle.png");
 }
 
 void GameScene::Update() {
@@ -96,7 +96,7 @@ void GameScene::Update() {
 	// viewProjection_.UpdateMatrix();
 
 	// 自キャラの更新
-	player_->Update();
+	player_->Update(viewProjection_);
 
 	// 敵キャラの更新
 	for (Enemy* enemy : enemy_) {
@@ -109,12 +109,13 @@ void GameScene::Update() {
 	// 天球
 	skydome_->Update();
 
+	CheckAllCollisions();
+	
 	// 当たり判定
-	for (Enemy* enemy : enemy_) {
+	/*for (Enemy* enemy : enemy_) {
 		for (EnemyBullet* enemyBullet : enemyBullets_) {
-			CheckAllCollisions();
 		}
-	}
+	}*/
 	// aa
 
 	// キャラクターの移動ベクトル
@@ -169,6 +170,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	
+	
 
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
@@ -196,6 +199,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	player_->DrawUI();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
