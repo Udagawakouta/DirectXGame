@@ -13,7 +13,9 @@
 #include "Enemy.h"
 #include "Skydome.h"
 #include "RailCamera.h"
+#include "Scene.h"
 #include <sstream>
+#include <list>
 
 /// <summary>
 /// ゲームシーン
@@ -25,7 +27,6 @@ public: // メンバ関数
 	/// コンストクラタ
 	/// </summary>
 	GameScene();
-	void CheckAllCollisions();
 	
 	/// <summary>
 	/// デストラクタ
@@ -37,6 +38,22 @@ public: // メンバ関数
 	/// </summary>
 	void Initialize();
 
+	/// <summary>
+	/// 毎フレーム処理
+	/// </summary>
+	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw();
+
+	bool IsSceneEnd() { return isSceneEnd; }
+	void SetIsSceneEnd() { isSceneEnd = false; }
+	SceneType NextScene() { return SceneType::kGameOver; }
+
+	void CheckAllCollisions();
+	
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
@@ -58,20 +75,12 @@ public: // メンバ関数
 	/// </summary>
 	void UpdateEnemyPopCommands();
 
-	/// <summary>
-	/// 毎フレーム処理
-	/// </summary>
-	void Update();
-
-	/// <summary>
-	/// 描画
-	/// </summary>
-	void Draw();
-
 	// 弾リストを取得
 	const std::list<EnemyBullet*>& GetBullets() const { return enemyBullets_; }
 
+
 private: // メンバ変数
+	bool isSceneEnd = false;
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
@@ -85,6 +94,9 @@ private: // メンバ変数
 	//uint32_t skydometextureHandle_ = 0;
 	// 自キャラ
 	Player* player_ = nullptr;
+
+	//自弾
+	std::list<PlayerBullet*> playerBullets_;
 
 	//敵キャラ
 	std::list<Enemy*> enemy_;

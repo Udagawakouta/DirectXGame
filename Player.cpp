@@ -41,6 +41,9 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 playerPosi
 
 	// スプライト生成
 	sprite2DReticle_ = Sprite::Create(textureReticle, {640, 320}, {1, 1, 1, 1}, {0.5f, 0.5f});
+
+	
+
 }
 
 void Player::Update(const ViewProjection& viewProjection) {
@@ -52,7 +55,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 	const float kCharacterSpeed = 0.2f;
 
 	// 回転速さ
-	const float kRotSpeed = 0.02f;
+	//const float kRotSpeed = 0.02f;
 
 	// デスフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
@@ -64,11 +67,11 @@ void Player::Update(const ViewProjection& viewProjection) {
 	});
 
 	// 押した方向で移動ベクトルを変更
-	if (input_->PushKey(DIK_LEFT)) {
+	/*if (input_->PushKey(DIK_LEFT)) {
 		worldTransform_.rotation_.y -= kRotSpeed;
 	} else if (input_->PushKey(DIK_RIGHT)) {
 		worldTransform_.rotation_.x += kRotSpeed;
-	}
+	}*/
 
 	// 押した方向で移動ベクトルを変更(左右)
 	if (input_->PushKey(DIK_A)) {
@@ -109,58 +112,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 	worldTransform_.translation_.y += move.y;
 	worldTransform_.translation_.z += move.z;
 
-	////スケーリング行列を宣言
-	// Matrix4x4 matScale = {0};
-
-	// matScale.m[0][0] = worldTransform_.scale_.x;
-	// matScale.m[1][1] = worldTransform_.scale_.y;
-	// matScale.m[2][2] = worldTransform_.scale_.z;
-	// matScale.m[3][3] = 1;
-
-	////X軸回転行列を宣言
-	// Matrix4x4 matRotX = {0};
-	// matRotX.m[0][0] = 1;
-	// matRotX.m[1][1] = cosf(worldTransform_.rotation_.x);
-	// matRotX.m[2][1] = -sinf(worldTransform_.rotation_.x);
-	// matRotX.m[1][2] = sinf(worldTransform_.rotation_.x);
-	// matRotX.m[2][2] = cosf(worldTransform_.rotation_.x);
-	// matRotX.m[3][3] = 1;
-	//
-	////Y軸回転行列を宣言
-	// Matrix4x4 matRotY = {0};
-	// matRotY.m[0][0] = cosf(worldTransform_.rotation_.y);
-	// matRotY.m[1][1] = 1;
-	// matRotY.m[0][2] = -sinf(worldTransform_.rotation_.y);
-	// matRotY.m[2][0] = sinf(worldTransform_.rotation_.y);
-	// matRotY.m[2][2] = cosf(worldTransform_.rotation_.y);
-	// matRotY.m[3][3] = 1;
-	//
-	////Z軸回転行列を宣言
-	// Matrix4x4 matRotZ = {0};
-	// matRotZ.m[0][0] = cosf(worldTransform_.rotation_.z);
-	// matRotZ.m[1][1] = sinf(worldTransform_.rotation_.z);
-	// matRotZ.m[0][1] = -sinf(worldTransform_.rotation_.z);
-	// matRotZ.m[1][1] = cosf(worldTransform_.rotation_.z);
-	// matRotZ.m[2][2] = 1;
-	// matRotZ.m[3][3] = 1;
-
-	// Matrix4x4 matRot = Multiply(Multiply(matRotZ, matRotX), matRotY);
-	//
-	////平行移動行列を宣言
-	// Matrix4x4 matTrans = {0};
-
-	// matTrans.m[0][0] = 1;
-	// matTrans.m[1][1] = 1;
-	// matTrans.m[2][2] = 1;
-	// matTrans.m[3][3] = 1;
-	// matTrans.m[3][0] = worldTransform_.translation_.x;
-	// matTrans.m[3][1] = worldTransform_.translation_.y;
-	// matTrans.m[3][2] = worldTransform_.translation_.z;
-
-	// worldTransform_.matWorld_ = Multiply(Multiply(matScale, matRot), matTrans);
-
-	////行列の転送
-	// worldTransform_.TransferMatrix();
+	
 
 	worldTransform_.UpdateMatrix();
 
@@ -179,43 +131,6 @@ void Player::Update(const ViewProjection& viewProjection) {
 	worldTransform_.translation_.x = playerPos[0];
 	worldTransform_.translation_.y = playerPos[1];
 	worldTransform_.translation_.z = playerPos[2];
-
-	// 自機のワールド座標から3Dレティクルのワールド座標を計算
-	{
-		////// 自機から3Dレティクルへの距離
-		//const float kDistancePlayerTo3DReticle = 50.0f;
-		//// 自機から3Dレティクルへのオフセット(Z+向き)
-		//Vector3 offset = {0, 0, 1.0f};
-		//// 自機のワールド行列の回転を反映
-		//offset = TransformNormal(offset, worldTransform_.matWorld_);
-		//offset = Normalize(offset);
-		//// ベクトルの長さを整える
-		//offset.x *= kDistancePlayerTo3DReticle;
-		//offset.y *= kDistancePlayerTo3DReticle;
-		//offset.z *= kDistancePlayerTo3DReticle;
-		//// 3Dレティクルの座標を設定
-		//worldTransform3DReticle_.translation_.x = GetWorldPosition().x + offset.x;
-		//worldTransform3DReticle_.translation_.y = GetWorldPosition().y + offset.y;
-		//worldTransform3DReticle_.translation_.z = GetWorldPosition().z + offset.z;
-
-		//worldTransform3DReticle_.UpdateMatrix();
-
-		//Vector3 positionReticle = GetWorldPosition();
-
-		//// ビューポート行列
-		//Matrix4x4 matViewport =
-		//    MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
-
-		//// ビュー行列とプロジェクション行列、ビューポート行列を合成する
-		//Matrix4x4 matViewProjectionViewport =
-		//    Multiply(Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
-
-		//// ワールドスクリーン座標変換
-		//positionReticle = Transform(positionReticle, matViewProjectionViewport);
-
-		//// スプライトのレティクルに座標設定
-		//sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
-	}
 
 	// マウスカーソルのスクリーン座標からワールド座標を取得して3Dレティクル配置
 	{
@@ -272,16 +187,16 @@ void Player::Update(const ViewProjection& viewProjection) {
 		
 		
 
-		ImGui::Begin("Player");
-		ImGui::Text("2DReticle:(%f,%f)", sprite2DReticle_->GetPosition().x,sprite2DReticle_->GetPosition().y);
-		ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y, posNear.z);
-		ImGui::Text("Far:(%+.2f,%+.2f,%+.2f)", posFar.x, posFar.y, posFar.z);
-		ImGui::Text("3DReticle:(%+.2f,%+.2f,%+.2f)", worldTransform3DReticle_.translation_.x,
-		    worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
-		ImGui::End();
+		//ImGui::Begin("Player");
+		//ImGui::Text("2DReticle:(%f,%f)", sprite2DReticle_->GetPosition().x,sprite2DReticle_->GetPosition().y);
+		//ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y, posNear.z);
+		//ImGui::Text("Far:(%+.2f,%+.2f,%+.2f)", posFar.x, posFar.y, posFar.z);
+		//ImGui::Text("3DReticle:(%+.2f,%+.2f,%+.2f)", worldTransform3DReticle_.translation_.x,
+		//    worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
+		//ImGui::End();
 	}
 }
-
+	
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
@@ -350,4 +265,7 @@ void Player::SetParent(const WorldTransform* parent) {
 	worldTransform_.parent_ = parent;
 }
 
-void Player::DrawUI() { sprite2DReticle_->Draw(); }
+void Player::DrawUI() { 
+	// レティクル描画
+	sprite2DReticle_->Draw();
+}

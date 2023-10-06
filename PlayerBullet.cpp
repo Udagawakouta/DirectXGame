@@ -20,8 +20,8 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 }
 
 void PlayerBullet::Update() {
-	//座標を移動させる
-	//  Y軸周り角度(θy)
+	// 座標を移動させる
+	// Y軸周り角度(θy)
 	worldTransform_.rotation_.y = std::atan2(velocity_.x, velocity_.z);
 	// 横軸方向の長さを求める
 	float velocityXZ;

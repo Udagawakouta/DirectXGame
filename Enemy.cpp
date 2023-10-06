@@ -33,9 +33,9 @@ void Enemy::Update() {
 	// キャラクターの移動ベクトル
 	Vector3 enemymove = {0, 0, 0};
 	// 敵の接近速さ
-	const float kApproachSpeed = 0.4f;
+	const float kApproachSpeed = 0.5f;
 	// 敵の離脱速さ
-	const float kLeaveSpeed = 0.4f;
+	const float kLeaveSpeed = 0.5f;
 
 	switch (phase_) {
 	case Phase::DoApproach:
@@ -61,20 +61,6 @@ void Enemy::Update() {
 		worldTransform_.UpdateMatrix();
 		break;
 	}
-
-	//// デスフラグの立った弾を削除
-	//bullets_.remove_if([](EnemyBullet* bullet) {
-	//	if (bullet->IsEnemyDead()) {
-	//		delete bullet;
-	//		return true;
-	//	}
-	//	return false;
-	//});
-
-	//// 弾更新
-	//for (EnemyBullet* bullet : bullets_) {
-	//	bullet->Update();
-	//}
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) {
@@ -92,7 +78,7 @@ void Enemy::Fire() {
 	assert(player_);
 
 	// 弾の速度
-	const float kBulletSpeed = 1.0f;
+	const float kBulletSpeed = 1.3f;
 	Vector3 velocity(0, 0, kBulletSpeed);
 
 	// プレイヤーワールド座標を取得
@@ -145,4 +131,12 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
-void Enemy::OnCollision() { isEnemyDead_ = true; }
+
+void Enemy::OnCollision() {
+	isEnemyDead_ = true; 
+	if (isBomb_){
+		isEnemyDead_ = false;
+		TextureManager::Load("FIRE.png");
+	}
+
+}

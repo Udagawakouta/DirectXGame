@@ -10,21 +10,7 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {
-	// delete sprite_;
-	// enemyの解放
-	for (Enemy* enemy : enemy_) {
-		delete enemy;
-	}
-	// bullet_の解散
-	for (EnemyBullet* bullet : enemyBullets_) {
-		delete bullet;
-	}
-	delete model_;
-	delete player_;
-	delete modelSkydome_;
-	delete debugCamera_;
-}
+GameScene::~GameScene() {}
 
 void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -54,7 +40,13 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 	player_->SetParent(&railcamera_->GetWorldTransform());
-	// playerbullet_ = new PlayerBullet();
+
+	
+	// 弾の処理
+	playerBullets_.push_back (new PlayerBullet);
+
+
+
 	// 自キャラの初期化
 	Vector3 playerPosition(0, 0, 10);
 	player_->Initialize(model_, textureHandle_, playerPosition);
@@ -84,6 +76,11 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+
+	if (input_->TriggerKey(DIK_1)) {
+		isSceneEnd = true;
+	}
+
 	// 敵の出現するタイミングと座標
 	UpdateEnemyPopCommands();
 	// レールカメラ
@@ -93,7 +90,6 @@ void GameScene::Update() {
 	viewProjection_.matProjection = railcamera_->GetViewProjection().matProjection;
 
 	viewProjection_.TransferMatrix();
-	// viewProjection_.UpdateMatrix();
 
 	// 自キャラの更新
 	player_->Update(viewProjection_);
@@ -110,35 +106,11 @@ void GameScene::Update() {
 	skydome_->Update();
 
 	CheckAllCollisions();
-	
-	// 当たり判定
-	/*for (Enemy* enemy : enemy_) {
-		for (EnemyBullet* enemyBullet : enemyBullets_) {
-		}
-	}*/
-	// aa
 
-	// キャラクターの移動ベクトル
-	// Vector3 move = {0, 0, 0};
-
-	//キャラクターの移動速さ
-	//const float kCharacterSpeed = 0.2f;
 
 #ifdef _DEBUG
 
-	//// 押した方向で移動ベクトルを変更(左右)
-	// if (input_->TriggerKey(DIK_LEFT)) {
-	//	move.x -= kCharacterSpeed;
-	// } else if (input_->TriggerKey(DIK_LIGHT)) {
-	//	move.x += kCharacterSpeed;
-	// }
-
-	//// 押した方向で移動ベクトルを変更(上下)
-	// if (input_->TriggerKey(DIK_UP)) {
-	//	move.y += kCharacterSpeed;
-	// } else if (input_->TriggerKey(DIK_DOWN)) {
-	//	move.y -= kCharacterSpeed;
-	// }
+	
 
 #endif
 }
@@ -256,6 +228,8 @@ void GameScene::CheckAllCollisions() {
 			}
 		}
 	}
+
+
 #pragma endregion
 
 #pragma region 自弾と敵弾の当たり判定

@@ -29,13 +29,13 @@ void RailCamera::Update() {
 	viewProjection_.matView = Inverse(worldtransform_.matWorld_);
 
 
-	//カメラの座標を画面表示する処理
-	ImGui::Begin("Camera");
+	////カメラの座標を画面表示する処理
+	//ImGui::Begin("Camera");
 
-	ImGui::SliderFloat3("translation", &worldtransform_.translation_.x, -100, 100);
-	ImGui::SliderFloat3("rotation", &worldtransform_.rotation_.x, -6.28f, 6.28f);
+	//ImGui::SliderFloat3("translation", &worldtransform_.translation_.x, -100, 100);
+	//ImGui::SliderFloat3("rotation", &worldtransform_.rotation_.x, -6.28f, 6.28f);
 
-	ImGui::End();
+	//ImGui::End();
 
 
 }

@@ -62,4 +62,6 @@ private:
 	WorldTransform worldTransform3DReticle_;
 	//2Dレティクル用のスプライト
 	Sprite* sprite2DReticle_ = nullptr;
+
+
 };

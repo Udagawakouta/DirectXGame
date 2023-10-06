@@ -68,6 +68,8 @@ private:
 	int32_t deathTimer_ = kLifeTime;
 	// デスフラグ
 	bool isEnemyDead_ = false;
+	// 爆発フラグ
+	bool isBomb_ = false;
 	//ゲームシーン
 	GameScene* gameScene_ = nullptr;
 	// 発射タイマーを初期化

@@ -4,8 +4,11 @@
 #include "GameScene.h"
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
+#include "Scene.h"
 #include "TextureManager.h"
+#include "TitleScene.h"
 #include "WinApp.h"
+#include "gameOverScene.h"
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -16,6 +19,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Audio* audio = nullptr;
 	AxisIndicator* axisIndicator = nullptr;
 	PrimitiveDrawer* primitiveDrawer = nullptr;
+	TitleScene* titleScene = nullptr;
 	GameScene* gameScene = nullptr;
 
 	// ゲームウィンドウの作成
@@ -57,9 +61,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	primitiveDrawer->Initialize();
 #pragma endregion
 
-	// ゲームシーンの初期化
+#pragma region 更新処理
 	gameScene = new GameScene();
 	gameScene->Initialize();
+
+	// タイトルシーンの初期化
+	titleScene = new TitleScene();
+	titleScene->Initialize();
+
+	SceneType sceneNo = SceneType::kTitle;
+
+	// ゲームオーバー初期化
+	gameOverScene* gameoverScene = new gameOverScene();
+	gameoverScene->Initialize();
+
+#pragma endregion
 
 	// メインループ
 	while (true) {
@@ -72,17 +88,68 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imguiManager->Begin();
 		// 入力関連の毎フレーム処理
 		input->Update();
-		// ゲームシーンの毎フレーム処理
-		gameScene->Update();
+
+		switch (sceneNo) {
+		case SceneType::kTitle:
+
+			titleScene->Update();
+
+			if (titleScene->IsSceneEnd()) {
+				// 次のシーンの値を代入してシーン切り替え
+				sceneNo = titleScene->NextScene();
+				titleScene->SetIsSceneEnd();
+			}
+
+			break;
+
+		case SceneType::kGamePlay:
+			gameScene->Update();
+
+			if (gameScene->IsSceneEnd()) {
+				// 次のシーンの値を代入してシーン切り替え
+				sceneNo = gameScene->NextScene();
+				gameScene->SetIsSceneEnd();
+			}
+			break;
+
+		case SceneType::kGameOver:
+			gameoverScene->Update();
+
+			if (gameoverScene->IsSceneEnd()) {
+				// 次のシーンの値を代入してシーン切り替え
+				sceneNo = gameoverScene->NextScene();
+				gameoverScene->SetIsSceneEnd();
+			}
+
+			break;
+		}
+
 		// 軸表示の更新
 		axisIndicator->Update();
 		// ImGui受付終了
 		imguiManager->End();
 
+#pragma region 描画処理
 		// 描画開始
 		dxCommon->PreDraw();
-		// ゲームシーンの描画
-		gameScene->Draw();
+
+		switch (sceneNo) {
+		case SceneType::kTitle:
+			// ゲームシーンの描画
+			titleScene->Draw();
+			break;
+
+		case SceneType::kGamePlay:
+			gameScene->Draw();
+
+			break;
+
+		case SceneType::kGameOver:
+			gameoverScene->Draw();
+
+			break;
+		}
+
 		// 軸表示の描画
 		axisIndicator->Draw();
 		// プリミティブ描画のリセット
@@ -91,10 +158,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imguiManager->Draw();
 		// 描画終了
 		dxCommon->PostDraw();
+#pragma endregion
 	}
 
 	// 各種解放
-	SafeDelete(gameScene);
+	SafeDelete(titleScene);
 	audio->Finalize();
 	// ImGui解放
 	imguiManager->Finalize();
