@@ -1,5 +1,5 @@
-﻿#include "Scene.h"
-
+﻿#pragma once
+#include "Scene.h"
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "Input.h"
@@ -9,37 +9,20 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
-#pragma once
-class TitleScene {
-public: // メンバ関数
-	/// <summary>
-	/// コンストクラタ
-	/// </summary>
-	TitleScene();
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~TitleScene();
-
-	/// <summary>
-	/// 初期化
-	/// </summary>
+class gameClearScene {
+public: 
+	// 初期化
 	void Initialize();
 
-	/// <summary>
-	/// 毎フレーム処理
-	/// </summary>
+	// 更新
 	void Update();
 
-	/// <summary>
-	/// 描画
-	/// </summary>
+	// 描画
 	void Draw();
 
-	void SetIsSceneEnd() { isSceneEnd = false; }
 	bool IsSceneEnd() { return isSceneEnd; }
-	SceneType NextScene() { return SceneType::kGamePlay; }
+	void SetIsSceneEnd() { isSceneEnd = false; }
+	SceneType NextScene() { return SceneType::kTitle; }
 
 private: // メンバ変数
 	bool isSceneEnd = false;
@@ -47,7 +30,6 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
-	
 	// タイトル画面のスプライト
 	Sprite* spriteTitle_ = nullptr;
 };

@@ -61,10 +61,18 @@ void Enemy::Update() {
 		worldTransform_.UpdateMatrix();
 		break;
 	}
+	if (deathNum>=5) {
+		isSceneEnd = true;
+	}
+	ImGui::Begin("Count");
+
+	ImGui::Text("%d",deathNum);
+
+	ImGui::End();
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) {
-	if (!isEnemyDead_) {
+	if (!isDead_) {
 		model_->Draw(worldTransform_, viewProjection, enemytextureHandle_);
 	}
 
@@ -133,10 +141,35 @@ Vector3 Enemy::GetWorldPosition() {
 
 
 void Enemy::OnCollision() {
-	isEnemyDead_ = true; 
+	bool isActive = true;
+	if (isActive) {
+		deathNum++;
+		isActive = false;
+
+	}
+
+	isDead_ = true; 
 	if (isBomb_){
-		isEnemyDead_ = false;
+		isDead_ = false;
 		TextureManager::Load("FIRE.png");
 	}
 
 }
+
+int Enemy::deathNum;
+
+void Enemy::Reset(Vector3 pos) {
+	// ワールドトランスフォームの初期化
+	worldTransform_.Initialize();
+
+	// X,Y,Z方向のスケーリングを設定
+	worldTransform_.translation_ = pos;
+
+	// 発射タイマーを初期化
+	shotTimer = kFireInterval;
+
+	// 接近フェーズ初期化
+	Approach();
+}
+
+void Enemy::Dead() { isDead_ = true; }

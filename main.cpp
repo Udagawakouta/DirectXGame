@@ -75,6 +75,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	gameOverScene* gameoverScene = new gameOverScene();
 	gameoverScene->Initialize();
 
+
+	// 敵の初期
+
 #pragma endregion
 
 	// メインループ
@@ -104,11 +107,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case SceneType::kGamePlay:
 			gameScene->Update();
-
+			
+			// ここのif文の条件が通ったらシーン以降する、タイトルと同じ様にシーン終了フラグをオンにすればいい
 			if (gameScene->IsSceneEnd()) {
 				// 次のシーンの値を代入してシーン切り替え
 				sceneNo = gameScene->NextScene();
 				gameScene->SetIsSceneEnd();
+
+				// ゲームシーンのリセット
+				gameScene->Reset();
 			}
 			break;
 
@@ -119,8 +126,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				// 次のシーンの値を代入してシーン切り替え
 				sceneNo = gameoverScene->NextScene();
 				gameoverScene->SetIsSceneEnd();
-			}
 
+			
+			}
+			
 			break;
 		}
 

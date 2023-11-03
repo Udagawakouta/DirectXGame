@@ -3,6 +3,7 @@
 #include "WorldTransform.h"
 #include "Input.h"
 #include "EnemyBullet.h"
+#include "Scene.h"
 #include <list>
 
 class Player;
@@ -29,13 +30,26 @@ public:
 
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
+	void Reset(Vector3 pos);
+
+	void Dead();
+
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
 
 	//敵ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+	bool IsSceneEnd() { return isSceneEnd; }
+	void SetIsSceneEnd() { isSceneEnd = false; }
+	SceneType NextScene() { return SceneType::kGameClear; }
+
 	static const int32_t kLifeTime = 60 * 5;
+
+	static int deathNum;
+
+	bool IsDead() const { return isDead_; } 
+
 
 private:
 	//発射感覚
@@ -48,6 +62,7 @@ private:
 		Leave,    // 離脱する
 	};
 
+	bool isSceneEnd = false;
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// モデル
@@ -67,11 +82,13 @@ private:
 	// デスタイマー
 	int32_t deathTimer_ = kLifeTime;
 	// デスフラグ
-	bool isEnemyDead_ = false;
+	bool isDead_ = false;
 	// 爆発フラグ
 	bool isBomb_ = false;
 	//ゲームシーン
 	GameScene* gameScene_ = nullptr;
+
+
 	// 発射タイマーを初期化
 	//int approach = 0;
 };

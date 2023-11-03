@@ -10,9 +10,14 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() { 
+	delete skydome_;
+
+}
 
 void GameScene::Initialize() {
+	deathNum = 0;
+	isActive = false;
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -77,9 +82,16 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 
+// release時は実行されない
+#ifdef _DEBUG
+
+	// デバッグ用
 	if (input_->TriggerKey(DIK_1)) {
+		// シーン終了フラグをオン
 		isSceneEnd = true;
 	}
+#endif // DEBUG
+
 
 	// 敵の出現するタイミングと座標
 	UpdateEnemyPopCommands();
@@ -98,8 +110,38 @@ void GameScene::Update() {
 	for (Enemy* enemy : enemy_) {
 		enemy->Update();
 	}
+	// エネミーが死んでたら削除する
+	enemy_.remove_if([](Enemy * enemy){
+		// ここに敵が死んでいるか確認する
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
+
 	for (EnemyBullet* enemyBullet : enemyBullets_) {
 		enemyBullet->Update();
+	}
+	// エネミー弾が死んでたら削除する
+	enemy_.remove_if([](Enemy* enemybullets) {
+		// ここに敵が死んでいるか確認する
+		if (enemybullets->IsDead()) {
+			delete enemybullets;
+			return true;
+		}
+		return false;
+	});
+
+
+	if (isActive) {
+		deathNum++;
+		isActive = false;
+	}
+	// クリア判定
+	if (deathNum >= 5) {
+		// シーン終了フラグをオン
+		isSceneEnd = true;
 	}
 
 	// 天球
@@ -202,8 +244,10 @@ void GameScene::CheckAllCollisions() {
 		float dz = (posB.z - posA.z) * (posB.z - posA.z);
 		float distance = dx + dy + dz;
 		if (distance <= (radius + radius) * (radius + radius)) {
+			// 今は即死なのでここでシーン終了フラグをオン
 			player_->OnCollision();
 			enemyBullet->OnCollision();
+			isSceneEnd = true;
 		}
 	}
 
@@ -259,6 +303,7 @@ void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
 }
 
 void GameScene::LoadEnemyPopData() {
+	enemyPopCommands_.clear();
 	// ファイルを開く
 	std::ifstream file;
 	file.open("Resources/enemyPop.csv");
@@ -280,6 +325,45 @@ void GameScene::SpawnEnemy(Vector3 pos) {
 	enemy->SetGameScene(this);
 	// リストに登録
 	enemy_.push_back(enemy);
+}
+
+void GameScene::Reset() {
+	LoadEnemyPopData();
+
+	//Enemy* enemy = new Enemy();
+	// ここでエネミーのリセット用の関数を呼ぶ
+	// やることはisEnemyDeadをtrue(これで削除する)
+	for (Enemy* enemy : enemy_) {
+		// 生きているenemyを殺す
+		enemy->Dead(); // エネミーのメンバ変数isDeadがtrueになる
+	}
+	
+	// エネミーのisDeadがtrueなら削除する
+	enemy_.remove_if([](Enemy* enemy) {
+		// ここに敵が死んでいるか確認する
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
+	
+	// 敵撃破カウントを0にする
+	deathNum = 0;
+
+	// 後はエネミーと同じように敵の弾も処理する
+	for (EnemyBullet*enemybullet : enemyBullets_) {
+		enemybullet->BulletDead();// 弾のメンバ変数isDeadがtrueになる
+	}
+
+	enemyBullets_.remove_if([](EnemyBullet* enemybullets) {
+		if (enemybullets->IsDead()) {
+			delete enemybullets;
+			return true;
+		}
+		return false;
+	});
+
 }
 
 void GameScene::UpdateEnemyPopCommands() {

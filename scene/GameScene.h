@@ -1,21 +1,22 @@
 ﻿#pragma once
 
 #include "Audio.h"
+#include "DebugCamera.h"
 #include "DirectXCommon.h"
+#include "Enemy.h"
 #include "Input.h"
 #include "Model.h"
+#include "Player.h"
+#include "RailCamera.h"
 #include "SafeDelete.h"
+#include "Scene.h"
+#include "Skydome.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "DebugCamera.h"
-#include "Player.h"
-#include "Enemy.h"
-#include "Skydome.h"
-#include "RailCamera.h"
-#include "Scene.h"
-#include <sstream>
 #include <list>
+#include <sstream>
+#include "EnemyBullet.h"
 
 /// <summary>
 /// ゲームシーン
@@ -27,7 +28,7 @@ public: // メンバ関数
 	/// コンストクラタ
 	/// </summary>
 	GameScene();
-	
+
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
@@ -48,12 +49,23 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	bool IsSceneEnd() { return isSceneEnd; }
 	void SetIsSceneEnd() { isSceneEnd = false; }
-	SceneType NextScene() { return SceneType::kGameOver; }
+	bool IsSceneEnd() { return isSceneEnd; }
+	SceneType GameOverScene() { return SceneType::kGameOver; }
+	SceneType GameClearScene() { return SceneType::kGameClear; }
+	SceneType NextScene() {
+		// やり方
+		// 1. if文使ってクリアかオーバーを戻り値にする
+		// 2.
+		// SceneTypeをメンバ変数として持ってそれを戻り値にする、gamesceneのUpdateとかでクリア時にその変数にSceneType::kGameClearを代入する
+		if (deathNum >= 5) {
+			return SceneType::kGameClear;
+		}
+		return SceneType::kGameOver;
+	}
 
 	void CheckAllCollisions();
-	
+
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
@@ -78,9 +90,11 @@ public: // メンバ関数
 	// 弾リストを取得
 	const std::list<EnemyBullet*>& GetBullets() const { return enemyBullets_; }
 
+	void Reset();
 
 private: // メンバ変数
 	bool isSceneEnd = false;
+
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
@@ -91,26 +105,26 @@ private: // メンバ変数
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 	uint32_t enemytextureHandle_ = 0;
-	//uint32_t skydometextureHandle_ = 0;
-	// 自キャラ
+	// uint32_t skydometextureHandle_ = 0;
+	//  自キャラ
 	Player* player_ = nullptr;
 
-	//自弾
+	// 自弾
 	std::list<PlayerBullet*> playerBullets_;
 
-	//敵キャラ
+	// 敵キャラ
 	std::list<Enemy*> enemy_;
 
-	//敵弾
+	// 敵弾
 	std::list<EnemyBullet*> enemyBullets_;
 
-	//敵発生コマンド
+	// 敵発生コマンド
 	std::stringstream enemyPopCommands_;
 
-	//天球
+	// 天球
 	Skydome* skydome_ = nullptr;
 
-	//レールカメラ
+	// レールカメラ
 	RailCamera* railcamera_ = nullptr;
 
 	// デバックカメラ有効
@@ -118,11 +132,11 @@ private: // メンバ変数
 
 	// デバックカメラ
 	DebugCamera* debugCamera_ = nullptr;
-	
-	//3Dモデル
+
+	// 3Dモデル
 	Model* model_ = nullptr;
 
-	//3Dモデルスカイドーム
+	// 3Dモデルスカイドーム
 	Model* modelSkydome_ = nullptr;
 
 	// ワールドトランスフォーム
@@ -130,8 +144,12 @@ private: // メンバ変数
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
 
-		// 敵が発生待機中か
+	// 敵が発生待機中か
 	bool isWait_ = false;
 	// 敵が発生するまでの時間
 	int32_t waitTime_ = 0;
+
+	int deathNum;
+
+	bool isActive;
 };

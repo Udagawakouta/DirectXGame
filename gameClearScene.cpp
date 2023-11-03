@@ -1,30 +1,24 @@
-﻿#include "TitleScene.h"
+﻿#include "gameClearScene.h"
 
-TitleScene::TitleScene() {}
-
-TitleScene::~TitleScene() {}
-
-void TitleScene::Initialize() {
+void gameClearScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
 	// タイトルのテクスチャの取得
-	uint32_t textureTitle = TextureManager::Load("Title.png");
+	uint32_t textureTitle = TextureManager::Load("clear.png");
 
 	// タイトルスプライトの生成
 	spriteTitle_ = Sprite::Create(textureTitle, {640, 360}, {1, 1, 1, 1}, {0.5f, 0.5f});
-
 }
 
-void TitleScene::Update() {
+void gameClearScene::Update() {
 	if (input_->TriggerKey(DIK_SPACE)) {
-		// シーン終了フラグをオン
 		isSceneEnd = true;
 	}
 }
 
-void TitleScene::Draw() {
+void gameClearScene::Draw() {
 
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
@@ -70,9 +64,9 @@ void TitleScene::Draw() {
 	// タイトル描画
 	spriteTitle_->Draw();
 
-
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
 #pragma endregion
+
 }
