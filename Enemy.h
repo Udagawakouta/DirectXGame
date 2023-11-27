@@ -53,7 +53,7 @@ public:
 
 private:
 	//発射感覚
-	static const int kFireInterval = 60;
+	static const int kFireInterval = 120;
 
 
 	// 行動フェーズ

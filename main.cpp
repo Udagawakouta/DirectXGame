@@ -8,6 +8,7 @@
 #include "TextureManager.h"
 #include "TitleScene.h"
 #include "WinApp.h"
+#include "gameClearScene.h"
 #include "gameOverScene.h"
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -71,10 +72,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	SceneType sceneNo = SceneType::kTitle;
 
+	// ゲームクリア初期化
+	gameClearScene* gameclearScene = new gameClearScene();
+	gameclearScene->Initialize();
+
 	// ゲームオーバー初期化
 	gameOverScene* gameoverScene = new gameOverScene();
 	gameoverScene->Initialize();
-
 
 	// 敵の初期
 
@@ -107,8 +111,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case SceneType::kGamePlay:
 			gameScene->Update();
-			
+
 			// ここのif文の条件が通ったらシーン以降する、タイトルと同じ様にシーン終了フラグをオンにすればいい
+			// ゲームシーンクラスのメンバ変数isSceneEndがtrueならシーン移行する
 			if (gameScene->IsSceneEnd()) {
 				// 次のシーンの値を代入してシーン切り替え
 				sceneNo = gameScene->NextScene();
@@ -119,6 +124,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			break;
 
+		case SceneType::kGameClear:
+			gameclearScene->Update();
+
+			if (gameclearScene->IsSceneEnd()) {
+				sceneNo = gameclearScene->NextScene();
+				gameScene->SetIsSceneEnd();
+			}
+
 		case SceneType::kGameOver:
 			gameoverScene->Update();
 
@@ -126,10 +139,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				// 次のシーンの値を代入してシーン切り替え
 				sceneNo = gameoverScene->NextScene();
 				gameoverScene->SetIsSceneEnd();
-
-			
 			}
-			
+
 			break;
 		}
 
@@ -150,6 +161,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case SceneType::kGamePlay:
 			gameScene->Draw();
+
+			break;
+
+		case SceneType::kGameClear:
+			gameclearScene->Draw();
 
 			break;
 

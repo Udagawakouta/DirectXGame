@@ -5,6 +5,7 @@
 #include "PrimitiveDrawer.h"
 #include "Skydome.h"
 #include "TextureManager.h"
+#include "gameClearScene.h"
 #include <cassert>
 #include <fstream>
 
@@ -45,12 +46,9 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 	player_->SetParent(&railcamera_->GetWorldTransform());
-
 	
 	// 弾の処理
 	playerBullets_.push_back (new PlayerBullet);
-
-
 
 	// 自キャラの初期化
 	Vector3 playerPosition(0, 0, 10);
@@ -86,12 +84,12 @@ void GameScene::Update() {
 #ifdef _DEBUG
 
 	// デバッグ用
-	if (input_->TriggerKey(DIK_1)) {
+	
+#endif // DEBUG
+if (input_->TriggerKey(DIK_1)) {
 		// シーン終了フラグをオン
 		isSceneEnd = true;
 	}
-#endif // DEBUG
-
 
 	// 敵の出現するタイミングと座標
 	UpdateEnemyPopCommands();
@@ -111,9 +109,11 @@ void GameScene::Update() {
 		enemy->Update();
 	}
 	// エネミーが死んでたら削除する
-	enemy_.remove_if([](Enemy * enemy){
+	enemy_.remove_if([&](Enemy * enemy){
 		// ここに敵が死んでいるか確認する
 		if (enemy->IsDead()) {
+			// ここの処理が通ったら敵が死んでるのでカウントする
+			deathNum++;
 			delete enemy;
 			return true;
 		}
@@ -124,22 +124,31 @@ void GameScene::Update() {
 		enemyBullet->Update();
 	}
 	// エネミー弾が死んでたら削除する
-	enemy_.remove_if([](Enemy* enemybullets) {
+	enemyBullets_.remove_if([](EnemyBullet* enemybullet) {
 		// ここに敵が死んでいるか確認する
-		if (enemybullets->IsDead()) {
-			delete enemybullets;
+		if (enemybullet->IsDead()) {
+
+			delete enemybullet;
 			return true;
 		}
 		return false;
 	});
 
-
-	if (isActive) {
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_2)) {
 		deathNum++;
-		isActive = false;
 	}
+#endif // _DEBUG
+
+
+
+	//if (isActive) {
+	//	deathNum++;
+	//	isActive = false;
+	//}
+	// 
 	// クリア判定
-	if (deathNum >= 5) {
+	if (deathNum >= DESTORT_ENEMY_MAX) {
 		// シーン終了フラグをオン
 		isSceneEnd = true;
 	}
@@ -199,6 +208,14 @@ void GameScene::Draw() {
 	}
 	// 天球の描画
 	skydome_->Draw(viewProjection_);
+
+	// クリア判定
+	if (deathNum >= 3) {
+		// シーン終了フラグをオン
+		isSceneEnd = false;
+		
+	}
+
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

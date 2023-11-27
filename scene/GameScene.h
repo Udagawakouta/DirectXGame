@@ -18,6 +18,49 @@
 #include <sstream>
 #include "EnemyBullet.h"
 
+/*
+	クラス作るうえで大事なこと
+	オブジェクト指向
+	1. カプセル化
+	2. 継承
+	3. ポリモーフィズム
+
+	カプセル化っていうのは
+	例えば Playerクラス作るときに
+	Playerクラスに使う変数を外で安易に変更できないようにする
+
+	それを実現するためにh(ヘッダー)で
+	private:
+	public:
+	で分けて書く
+	// ゲームシーンでプレイヤーの変数からメンバ変数のxにアクセスして変更できるようにしてはいけない
+	player.x = 100;
+
+	なんでしてはいけないか
+	クラス作る理由、処理がまとまって見やすくなる
+	プログラム書くときに誰がどこに書いたかっていうのが大事になる
+	様は責任を持たしたい、クラス名にそった処理をすべき
+
+	じゃあ、クラスにないある変数の値が欲しかったりする場合あるよね
+	例えば当たり判定の時は座標がほしい
+	死んでるかどうか判定するために死亡フラグの値が欲しかったりするよね
+	それらを解決するためにアクセッサを使う
+
+	ゲッター,メンバ変数の値を戻り値(return)するだけの関数
+	int IsSceenEnd() { return isSceneEnd; } // フラグ系はIs付ける
+	Vector2 GetPositon() { return positno; }
+
+	セッター , void型かつ引数ありの関数
+	引数から受け取った値をメンバ変数に代入する
+	外部でどうしてもメンバ変数の値を変更したいときに使う
+	void SetPositon(Vector2 pos) {
+		position.x = pos.x;
+		position.y = pos.y;
+	}
+*/
+// 定数みたいなもの
+#define DESTORT_ENEMY_MAX 3
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -58,7 +101,7 @@ public: // メンバ関数
 		// 1. if文使ってクリアかオーバーを戻り値にする
 		// 2.
 		// SceneTypeをメンバ変数として持ってそれを戻り値にする、gamesceneのUpdateとかでクリア時にその変数にSceneType::kGameClearを代入する
-		if (deathNum >= 5) {
+		if (deathNum >= DESTORT_ENEMY_MAX) {
 			return SceneType::kGameClear;
 		}
 		return SceneType::kGameOver;

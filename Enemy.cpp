@@ -33,9 +33,9 @@ void Enemy::Update() {
 	// キャラクターの移動ベクトル
 	Vector3 enemymove = {0, 0, 0};
 	// 敵の接近速さ
-	const float kApproachSpeed = 0.5f;
+	const float kApproachSpeed = 0.2f;
 	// 敵の離脱速さ
-	const float kLeaveSpeed = 0.5f;
+	const float kLeaveSpeed = 0.2f;
 
 	switch (phase_) {
 	case Phase::DoApproach:

@@ -10,7 +10,7 @@ void gameOverScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	// タイトルのテクスチャの取得
-	uint32_t textureTitle = TextureManager::Load("uvChecker.png");
+	uint32_t textureTitle = TextureManager::Load("gameOver.png");
 
 	// タイトルスプライトの生成
 	spriteTitle_ = Sprite::Create(textureTitle, {640, 360}, {1, 1, 1, 1}, {0.5f, 0.5f});

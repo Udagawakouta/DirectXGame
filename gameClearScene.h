@@ -24,6 +24,7 @@ public:
 	void SetIsSceneEnd() { isSceneEnd = false; }
 	SceneType NextScene() { return SceneType::kTitle; }
 
+
 private: // メンバ変数
 	bool isSceneEnd = false;
 	DirectXCommon* dxCommon_ = nullptr;
