@@ -81,15 +81,17 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 
 // release時は実行されない
-#ifdef _DEBUG
 
 	// デバッグ用
-	
-#endif // DEBUG
+#ifdef DEBUG
+
 if (input_->TriggerKey(DIK_1)) {
 		// シーン終了フラグをオン
 		isSceneEnd = true;
 	}
+#endif // DEBUG
+
+
 
 	// 敵の出現するタイミングと座標
 	UpdateEnemyPopCommands();
