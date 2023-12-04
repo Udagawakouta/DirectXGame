@@ -64,11 +64,17 @@ void Enemy::Update() {
 	if (deathNum>=5) {
 		isSceneEnd = true;
 	}
+
+#ifdef DEBUG
+
 	ImGui::Begin("Count");
 
 	ImGui::Text("%d",deathNum);
 
 	ImGui::End();
+
+#endif // DEBUG
+
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) {

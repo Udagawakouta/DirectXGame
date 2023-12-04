@@ -116,6 +116,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 
 	worldTransform_.UpdateMatrix();
 
+	#ifdef DEBUG
 	// キャラクターの座標を画面表示する処理
 	ImGui::Begin("Debug");
 	float playerPos[] = {
@@ -126,11 +127,14 @@ void Player::Update(const ViewProjection& viewProjection) {
 	ImGui::SliderFloat3("PlayerPos", playerPos, 100, 1280);
 	ImGui::End();
 
+#endif // DEBUG
+
+
 	// ↑処理のままだとSliderFloat3でplayerPosの値を変えているので実際の座標(translation)が
 	// 変わっていいないのでここで変更する
-	worldTransform_.translation_.x = playerPos[0];
-	worldTransform_.translation_.y = playerPos[1];
-	worldTransform_.translation_.z = playerPos[2];
+	// worldTransform_.translation_.x = playerPos[0];
+	// worldTransform_.translation_.y = playerPos[1];
+	// worldTransform_.translation_.z = playerPos[2];
 
 	// マウスカーソルのスクリーン座標からワールド座標を取得して3Dレティクル配置
 	{
@@ -184,16 +188,6 @@ void Player::Update(const ViewProjection& viewProjection) {
 		worldTransform3DReticle_.translation_.z = (mouseDirection.z * kDistanceTestObject) + posNear.z;
 
 		worldTransform3DReticle_.UpdateMatrix();
-		
-		
-
-		//ImGui::Begin("Player");
-		//ImGui::Text("2DReticle:(%f,%f)", sprite2DReticle_->GetPosition().x,sprite2DReticle_->GetPosition().y);
-		//ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y, posNear.z);
-		//ImGui::Text("Far:(%+.2f,%+.2f,%+.2f)", posFar.x, posFar.y, posFar.z);
-		//ImGui::Text("3DReticle:(%+.2f,%+.2f,%+.2f)", worldTransform3DReticle_.translation_.x,
-		//    worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
-		//ImGui::End();
 	}
 }
 	
